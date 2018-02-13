@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+shopt -s nullglob globstar
+
+prefix=${PASSWORD_STORE_DIR-~/.password-store}
+keys=( "$prefix"/$1/*.gpg )
+keys=( "${keys[@]#"$prefix"/}" )
+keys=( "${keys[@]%.gpg}" )
+keys=( "${keys[@]#"$1"/}" )
+
+for key in "${keys[@]}"
+do
+	export "$key=$(pass $1/$key)"
+done
+
+exec "${@:2}"
